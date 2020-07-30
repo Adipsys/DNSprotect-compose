@@ -23,6 +23,7 @@ services:
       restart: always
       environment:
          - SERVER_ALIAS=${SERVER_ALIAS}
+         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       ports:
               - 80:80
       volumes:
