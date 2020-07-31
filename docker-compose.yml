@@ -23,6 +23,7 @@ services:
       image: docker.adipsys.com:5000/dnsp-ha-web
       restart: always
       environment:
+         - OPERATOR=${OPERATOR}
          - SERVER_ALIAS=${SERVER_ALIAS}
          - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       ports:
