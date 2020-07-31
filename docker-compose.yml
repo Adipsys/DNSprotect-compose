@@ -28,6 +28,7 @@ services:
       ports:
               - 80:80
       volumes:
+              - 'ssl-certificates_vol01:/root/ssl_certificates/'
               - 'pdns_vol01:/etc/powerdns/'
               - 'pdns_vol01:/lock/'
       depends_on:
