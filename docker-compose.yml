@@ -3,6 +3,7 @@ version: '2.4'
 volumes:
  pdns_vol01:
  pdns-db_vol01:
+ ssl-certificates_vol01:
 
 services:
  dnsp-db:
