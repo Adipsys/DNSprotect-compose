@@ -31,6 +31,9 @@ services:
          - OPERATOR=${OPERATOR}
          - SERVER_ALIAS=${SERVER_ALIAS}
          - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      deploy:
+         placement:
+               max_replicas_per_node: 1
       ports:
               - ${WEB_IHM_PORT}:80
               - ${WEB_IHM_SSL_PORT}:443
@@ -44,6 +47,9 @@ services:
  dnsp-pdns:
       image: docker.adipsys.com:5000/dnsp-ha-pdns
       restart: always
+      deploy:
+         placement:
+               max_replicas_per_node: 1
       ports:
               - ${DNS_PORT}:53/udp
       volumes:
@@ -56,6 +62,9 @@ services:
       restart: always
       environment:
          - discovery.type=single-node
+      deploy:
+         placement:
+               max_replicas_per_node: 1
       image: docker.adipsys.com:5000/dnsp-ha-es
 
  dnsp-ls:
@@ -63,12 +72,18 @@ services:
       restart: always
       environment:
          - discovery.type=single-node
+      deploy:
+         placement:
+               max_replicas_per_node: 1
       depends_on:
               - "dnsp-es"
 
  dnsp-fb:
       image: docker.adipsys.com:5000/dnsp-ha-fb
       restart: always
+      deploy:
+         placement:
+               max_replicas_per_node: 1
       volumes:
               - 'pdns_vol01:/logs/'
       depends_on:
