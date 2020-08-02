@@ -15,6 +15,11 @@ services:
       - MYSQL_DATABASE=dnsprotect
       - MYSQL_USER=dnsprotect
       - MYSQL_PASSWORD=dnsprotect
+    deploy:
+      placement:
+               max_replicas_per_node: 1
+               constraints:
+                   - node.role == manager
     volumes:
           - 'pdns-db_vol01:/var/lib/mysql/'
           - 'pdns_vol01:/lock/'
