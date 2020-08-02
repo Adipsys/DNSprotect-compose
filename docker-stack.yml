@@ -63,8 +63,10 @@ services:
       environment:
          - discovery.type=single-node
       deploy:
-         placement:
-               max_replicas_per_node: 1
+        placement:
+             max_replicas_per_node: 1
+             constraints:
+                 - node.role == manager
       image: docker.adipsys.com:5000/dnsp-ha-es
 
  dnsp-ls:
