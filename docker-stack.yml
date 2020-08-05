@@ -54,7 +54,7 @@ services:
         placement:
       #          max_replicas_per_node: 1
                  constraints:
-                     - node.role = manager
+                     - node.role == manager
       ports:
               - ${DNS_PORT}:53/udp
       volumes:
@@ -94,7 +94,7 @@ services:
           placement:
     #          max_replicas_per_node: 1
                  constraints:
-                     - node.role = manager
+                     - node.role == manager
       volumes:
               - 'pdns_vol01:/logs/'
       depends_on:
