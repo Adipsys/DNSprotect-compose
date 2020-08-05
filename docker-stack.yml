@@ -17,40 +17,44 @@ services:
       - MYSQL_PASSWORD=dnsprotect
     deploy:
       placement:
-   #            max_replicas_per_node: 1
+    #          max_replicas_per_node: 1
                constraints:
-                   - node.role == manager
+                   - node.role != manager
     volumes:
           - 'pdns-db_vol01:/var/lib/mysql/'
-          - 'pdns_vol01:/lock/'
+    #     - 'pdns_vol01:/lock/'
 
  dnsp-web:
-      image: docker.adipsys.com:5000/dnsp-ha-web
-      restart: always
-      environment:
+    image: docker.adipsys.com:5000/dnsp-ha-web
+    restart: always
+    environment:
          - OPERATOR=${OPERATOR}
          - SERVER_ALIAS=${SERVER_ALIAS}
          - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
          - ADMIN_PASSWD=${ADMIN_PASSWD}
-    #  deploy:
-     #    placement:
-      #         max_replicas_per_node: 1
+    deploy:
+      placement:
+    #          max_replicas_per_node: 1
+               constraints:
+                   - node.role = manager
       ports:
               - ${WEB_IHM_PORT}:80
               - ${WEB_IHM_SSL_PORT}:443
-      volumes:
+    volumes:
               - 'ssl-certificates_vol01:/root/ssl_certificates/'
               - 'pdns_vol01:/etc/powerdns/'
               - 'pdns_vol01:/lock/'
-      depends_on:
+    depends_on:
         - "dnsp-db"
 
  dnsp-pdns:
       image: docker.adipsys.com:5000/dnsp-ha-pdns
       restart: always
-    #  deploy:
-     #    placement:
-      #         max_replicas_per_node: 1
+      deploy:
+        placement:
+      #          max_replicas_per_node: 1
+                 constraints:
+                     - node.role = manager
       ports:
               - ${DNS_PORT}:53/udp
       volumes:
@@ -67,7 +71,7 @@ services:
         placement:
         #     max_replicas_per_node: 1
              constraints:
-                 - node.role == manager
+                 - node.role != manager
       image: docker.adipsys.com:5000/dnsp-ha-es
 
  dnsp-ls:
@@ -75,18 +79,22 @@ services:
       restart: always
       environment:
          - discovery.type=single-node
-#      deploy:
- #        placement:
-  #             max_replicas_per_node: 1
+      deploy:
+          placement:
+    #          max_replicas_per_node: 1
+                 constraints:
+                     - node.role != manager
       depends_on:
               - "dnsp-es"
 
  dnsp-fb:
       image: docker.adipsys.com:5000/dnsp-ha-fb
       restart: always
-  #    deploy:
-   #      placement:
-    #           max_replicas_per_node: 1
+      deploy:
+          placement:
+    #          max_replicas_per_node: 1
+                 constraints:
+                     - node.role = manager
       volumes:
               - 'pdns_vol01:/logs/'
       depends_on:
