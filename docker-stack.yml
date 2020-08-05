@@ -12,9 +12,9 @@ services:
     environment:
       - DB_SERVICE_NAME=dbcluster
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=dnsprotect
-      - MYSQL_USER=dnsprotect
-      - MYSQL_PASSWORD=dnsprotect
+    #  - MYSQL_DATABASE=dnsprotect
+    #  - MYSQL_USER=dnsprotect
+    #  - MYSQL_PASSWORD=dnsprotect
     deploy:
       placement:
     #          max_replicas_per_node: 1
