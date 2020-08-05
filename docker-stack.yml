@@ -36,7 +36,7 @@ services:
       placement:
     #          max_replicas_per_node: 1
                constraints:
-                   - node.role = manager
+                   - node.role == manager
     ports:
               - ${WEB_IHM_PORT}:80
               - ${WEB_IHM_SSL_PORT}:443
