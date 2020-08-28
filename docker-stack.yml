@@ -76,7 +76,7 @@ services:
         placement:
         #     max_replicas_per_node: 1
              constraints:
-                 - node.role != manager
+        #         - node.role != manager
       image: docker.adipsys.com:5000/dnsp-ha-es
 
  dnsp-ls:
@@ -88,7 +88,7 @@ services:
           placement:
     #          max_replicas_per_node: 1
                  constraints:
-                     - node.role != manager
+    #                 - node.role != manager
       depends_on:
               - "dnsp-es"
 
