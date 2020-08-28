@@ -9,20 +9,35 @@ services:
  dnsp-db:
     image: docker.adipsys.com:5000/dnsp-ha-db
     restart: always
+    command: seed    
+#   command: node dnsp-dbX
     environment:
-      - DB_SERVICE_NAME=dbcluster
+      - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    #  - MYSQL_DATABASE=dnsprotect
-    #  - MYSQL_USER=dnsprotect
-    #  - MYSQL_PASSWORD=dnsprotect
+      - MYSQL_ROOT_HOST=%
     deploy:
       placement:
-    #          max_replicas_per_node: 1
-               constraints:
-                   - node.role == manager
+             #max_replicas_per_node: 1
+             constraints:
+                 - node.role == manager
     volumes:
           - 'dnsp-db_vol01:/var/lib/mysql/'
-    #     - 'dnsp_vol01:/lock/'
+         
+# dnsp-dbX:
+#    image: docker.adipsys.com:5000/dnsp-ha-db
+#    restart: always
+#    command: node dnsp-db
+#    environment:
+#      - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#      - MYSQL_ROOT_HOST=%
+#    deploy:
+#      placement:
+#             #max_replicas_per_node: 1
+#             constraints:
+#                 - node.role != manager
+#    volumes:
+#          - 'dnsp-db_vol01:/var/lib/mysql/'
 
  dnsp-web:
     image: docker.adipsys.com:5000/dnsp-ha-web
