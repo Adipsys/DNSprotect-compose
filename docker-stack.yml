@@ -72,10 +72,10 @@ services:
       restart: always
       environment:
          - discovery.type=single-node
-      deploy:
-        placement:
+      #deploy:
+        #placement:
         #     max_replicas_per_node: 1
-             constraints:
+        #     constraints:
         #         - node.role != manager
       image: docker.adipsys.com:5000/dnsp-ha-es
 
@@ -84,10 +84,10 @@ services:
       restart: always
       environment:
          - discovery.type=single-node
-      deploy:
-          placement:
+    #  deploy:
+    #      placement:
     #          max_replicas_per_node: 1
-                 constraints:
+    #             constraints:
     #                 - node.role != manager
       depends_on:
               - "dnsp-es"
