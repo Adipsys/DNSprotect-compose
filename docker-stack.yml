@@ -75,7 +75,10 @@ services:
                  constraints:
                      - node.role == manager
       ports:
-              - ${DNS_PORT}:53/udp
+              - target: ${DNS_PORT}
+                published: 53
+                protocol: udp
+                mode: host
       volumes:
               - 'dnsp_vol01:/etc/powerdns/'
               - 'dnsp_vol01:/logs/'
