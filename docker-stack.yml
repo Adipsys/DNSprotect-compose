@@ -40,7 +40,7 @@ services:
 #          - 'dnsp-db_vol01:/var/lib/mysql/'
 
  dnsp-web:
-    image: docker.adipsys.com:5000/dnsp-ha-web
+    image: docker.adipsys.com:5000/dnsp-ha-web:${PRODUCT_VERSION}
     restart: always
     environment:
          - OPERATOR=${OPERATOR}
@@ -65,7 +65,7 @@ services:
          - "dnsp-db"
 
  dnsp-pdns:
-      image: docker.adipsys.com:5000/dnsp-ha-pdns
+      image: docker.adipsys.com:5000/dnsp-ha-pdns:${PRODUCT_VERSION}
       restart: always
       environment:
                - RSYSLOG_SERVER=${RSYSLOG_SERVER}
@@ -95,10 +95,10 @@ services:
         #     max_replicas_per_node: 1
         #     constraints:
         #         - node.role != manager
-      image: docker.adipsys.com:5000/dnsp-ha-es
+      image: docker.adipsys.com:5000/dnsp-ha-es:${PRODUCT_VERSION}
 
  dnsp-ls:
-      image: docker.adipsys.com:5000/dnsp-ha-ls
+      image: docker.adipsys.com:5000/dnsp-ha-ls:${PRODUCT_VERSION}
       restart: always
       environment:
          - discovery.type=single-node
@@ -111,7 +111,7 @@ services:
               - "dnsp-es"
 
  dnsp-fb:
-      image: docker.adipsys.com:5000/dnsp-ha-fb
+      image: docker.adipsys.com:5000/dnsp-ha-fb:${PRODUCT_VERSION}
       restart: always
       deploy:
           placement:
