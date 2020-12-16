@@ -15,6 +15,7 @@ services:
       - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ROOT_HOST=%
+      #- FAKE_HEALTHCHECK=8081
     deploy:
       placement:
              #max_replicas_per_node: 1
@@ -61,6 +62,7 @@ services:
               - '/root/ssl_certificates/:/root/ssl_certificates/'
               - 'dnsp_vol01:/etc/powerdns/'
               - 'dnsp_vol01:/lock/'
+              - 'dnsp_vol01:/var/www/dnsp/public/uploads'
     depends_on:
          - "dnsp-db"
 
