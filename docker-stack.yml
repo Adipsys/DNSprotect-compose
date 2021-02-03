@@ -9,8 +9,7 @@ services:
  dnsp-db:
     image: docker.adipsys.com:5000/dnsp-ha-db
     restart: always
-    command: seed    
-#   command: node dnsp-dbX
+    command: seed
     environment:
       - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -24,17 +23,18 @@ services:
     volumes:
           - 'dnsp-db_vol01:/var/lib/mysql/'
          
-# dnsp-dbX:
+# dnsp-db:
 #    image: docker.adipsys.com:5000/dnsp-ha-db
 #    restart: always
-#    command: node dnsp-db
+#    command: node tasks.dnsp-db-seed,tasks.dnsp-db
 #    environment:
 #      - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
 #      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 #      - MYSQL_ROOT_HOST=%
 #    deploy:
+#      replicas: 0
 #      placement:
-#             #max_replicas_per_node: 1
+#             max_replicas_per_node: 1
 #             constraints:
 #                 - node.role != manager
 #    volumes:
