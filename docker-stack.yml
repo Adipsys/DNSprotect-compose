@@ -7,6 +7,12 @@ volumes:
  dnsp-uploads_vol01:
  dnsp-db_vol01:
  #ssl-certificates_vol01:
+ 
+#networks:
+#  traefik:
+#   name: traefik
+#   external: true
+#  local_stack:
 
 services:
  dnsp-db:
@@ -44,6 +50,8 @@ services:
 #             max_replicas_per_node: 1
 #             constraints:
 #                 - node.role != manager
+#    networks:
+#        - local_stack
 #    volumes:
 #          - 'dnsp-db_vol01:/var/lib/mysql/'
 
@@ -80,6 +88,9 @@ services:
     ports:
               - ${WEB_IHM_PORT}:80
               - ${WEB_IHM_SSL_PORT}:443
+#   networks:
+#          - traefik
+#          - local_stack
     volumes:
               #- 'ssl-certificates_vol01:/root/ssl_certificates/'
               - '/root/ssl_certificates/:/root/ssl_certificates/'
@@ -104,6 +115,8 @@ services:
                 published: 53
                 protocol: udp
                 mode: host
+#     networks:
+#         - local_stack
       volumes:
               - 'dnsp-conf_vol01:/etc/powerdns/'
               - 'dnsp-logs_vol01:/logs/'
@@ -112,6 +125,7 @@ services:
         - "dnsp-db"
 
  dnsp-es:
+      image: docker.adipsys.com:5000/dnsp-ha-es:${PRODUCT_VERSION}
       environment:
          - discovery.type=single-node
       deploy:
@@ -120,8 +134,8 @@ services:
              max_replicas_per_node: 1
         #     constraints:
         #         - node.role != manager
-      image: docker.adipsys.com:5000/dnsp-ha-es:${PRODUCT_VERSION}
-
+#     networks:
+#        - local_stack
  dnsp-ls:
       image: docker.adipsys.com:5000/dnsp-ha-ls:${PRODUCT_VERSION}
       environment:
@@ -145,6 +159,8 @@ services:
                  #    - node.role == manager
       volumes:
               - 'dnsp-logs_vol01:/logs/'
+#     networks:
+#        - local_stack
       depends_on:
               - "dnsp-es"
               - "dnsp-ls"
