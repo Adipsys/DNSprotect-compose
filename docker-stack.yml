@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 volumes:
  dnsp_vol01:
@@ -8,7 +8,6 @@ volumes:
 services:
  dnsp-db:
     image: docker.adipsys.com:5000/dnsp-ha-db
-    restart: always
     command: seed
     environment:
       - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -16,8 +15,9 @@ services:
       - MYSQL_ROOT_HOST=%
       #- FAKE_HEALTHCHECK=8081
     deploy:
+      replicas: 1
       placement:
-             #max_replicas_per_node: 1
+             max_replicas_per_node: 1
              constraints:
                  - node.role == manager
     volumes:
@@ -25,13 +25,17 @@ services:
          
 # dnsp-db:
 #    image: docker.adipsys.com:5000/dnsp-ha-db
-#    restart: always
 #    command: node tasks.dnsp-db-seed,tasks.dnsp-db
 #    environment:
 #      - XTRABACKUP_PASSWORD=${MYSQL_ROOT_PASSWORD}
 #      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 #      - MYSQL_ROOT_HOST=%
 #    deploy:
+#      restart_policy:
+#           condition: none
+#           delay: 5s
+#           max_attempts: 3
+#           window: 120s
 #      replicas: 0
 #      placement:
 #             max_replicas_per_node: 1
@@ -42,7 +46,7 @@ services:
 
  dnsp-web:
     image: docker.adipsys.com:5000/dnsp-ha-web:${PRODUCT_VERSION}
-    restart: always
+    hostname: dnsp-node1
     environment:
          - OPERATOR=${OPERATOR}
          - SERVER_NAME=${SERVER_NAME}
@@ -54,6 +58,22 @@ services:
     #          max_replicas_per_node: 1
                constraints:
                    - node.role == manager
+      labels:
+             - "traefik.enable=false"
+             - "traefik.http.routers.DNSP-admin-http.rule=Host(`${SERVER_NAME}`)"
+             - "traefik.http.routers.DNSP-admin-http.entrypoints=web"
+             
+             - "traefik.http.routers.DNSP-admin-https.rule=Host(`${SERVER_NAME}`)"
+             - "traefik.http.routers.DNSP-admin-https.entrypoints=websecure"
+             - "traefik.http.routers.DNSP-admin-https.tls=true"
+        #    - "traefik.http.routers.DNSP-adminoc-https.tls.certresolver=letsEncrypt"
+             
+             - "traefik.http.services.DNSP.loadbalancer.server.port=80"
+             - "traefik.http.services.DNSP.loadbalancer.server.scheme=http"
+             - "traefik.http.services.DNSP.loadbalancer.sticky=true"
+             - "traefik.http.services.DNSP.loadbalancer.sticky.cookie.name=traefik"
+
+             - "traefik.docker.network=traefik"
     ports:
               - ${WEB_IHM_PORT}:80
               - ${WEB_IHM_SSL_PORT}:443
@@ -68,12 +88,12 @@ services:
 
  dnsp-pdns:
       image: docker.adipsys.com:5000/dnsp-ha-pdns:${PRODUCT_VERSION}
-      restart: always
       environment:
                - RSYSLOG_SERVER=${RSYSLOG_SERVER}
       deploy:
+        replicas: 1
         placement:
-      #          max_replicas_per_node: 1
+                 max_replicas_per_node: 1
                  constraints:
                      - node.role == manager
       ports:
@@ -89,24 +109,24 @@ services:
         - "dnsp-db"
 
  dnsp-es:
-      restart: always
       environment:
          - discovery.type=single-node
-      #deploy:
-        #placement:
-        #     max_replicas_per_node: 1
+      deploy:
+        replicas: 1
+        placement:
+             max_replicas_per_node: 1
         #     constraints:
         #         - node.role != manager
       image: docker.adipsys.com:5000/dnsp-ha-es:${PRODUCT_VERSION}
 
  dnsp-ls:
       image: docker.adipsys.com:5000/dnsp-ha-ls:${PRODUCT_VERSION}
-      restart: always
       environment:
          - discovery.type=single-node
-    #  deploy:
-    #      placement:
-    #          max_replicas_per_node: 1
+      deploy:
+          replicas: 1
+          placement:
+              max_replicas_per_node: 1
     #             constraints:
     #                 - node.role != manager
       depends_on:
@@ -114,12 +134,12 @@ services:
 
  dnsp-fb:
       image: docker.adipsys.com:5000/dnsp-ha-fb:${PRODUCT_VERSION}
-      restart: always
       deploy:
+          replicas: 1
           placement:
-    #          max_replicas_per_node: 1
-                 constraints:
-                     - node.role == manager
+              max_replicas_per_node: 1
+                 #constraints:
+                 #    - node.role == manager
       volumes:
               - 'dnsp_vol01:/logs/'
       depends_on:
