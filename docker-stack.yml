@@ -2,6 +2,9 @@ version: '3.8'
 
 volumes:
  dnsp_vol01:
+ dnsp-conf_vol01:
+ dnsp-logs_vol01:
+ dnsp-uploads_vol01:
  dnsp-db_vol01:
  #ssl-certificates_vol01:
 
@@ -80,9 +83,9 @@ services:
     volumes:
               #- 'ssl-certificates_vol01:/root/ssl_certificates/'
               - '/root/ssl_certificates/:/root/ssl_certificates/'
-              - 'dnsp_vol01:/etc/powerdns/'
-              - 'dnsp_vol01:/lock/'
-              - 'dnsp_vol01:/var/www/dnsp/public/uploads'
+              - 'dnsp-conf_vol01:/etc/powerdns/'
+              #- 'dnsp_vol01:/lock/'
+              - 'dnsp-uploads_vol01:/var/www/dnsp/public/uploads'
     depends_on:
          - "dnsp-db"
 
@@ -102,9 +105,9 @@ services:
                 protocol: udp
                 mode: host
       volumes:
-              - 'dnsp_vol01:/etc/powerdns/'
-              - 'dnsp_vol01:/logs/'
-              - 'dnsp_vol01:/lock/'
+              - 'dnsp-conf_vol01:/etc/powerdns/'
+              - 'dnsp-logs_vol01:/logs/'
+              #- 'dnsp_vol01:/lock/'
       depends_on:
         - "dnsp-db"
 
@@ -141,7 +144,7 @@ services:
                  #constraints:
                  #    - node.role == manager
       volumes:
-              - 'dnsp_vol01:/logs/'
+              - 'dnsp-logs_vol01:/logs/'
       depends_on:
               - "dnsp-es"
               - "dnsp-ls"
