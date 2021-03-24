@@ -71,7 +71,9 @@ services:
                    - node.role == manager
       labels:
              - "traefik.enable=false"
-             - "traefik.http.routers.DNSP-admin-http.rule=Host(`${SERVER_NAME}`)"
+             #- "traefik.http.routers.DNSP-admin-http.rule=Host(`${SERVER_NAME}`)"
+             - "traefik.http.routers.DNSP-http.rule=HostRegexp(`{host:.+}`)"
+             - "traefik.http.routers.DNSP-http.priority=1
              - "traefik.http.routers.DNSP-admin-http.entrypoints=web"
              
              - "traefik.http.routers.DNSP-admin-https.rule=Host(`${SERVER_NAME}`)"
